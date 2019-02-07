@@ -1,13 +1,11 @@
 (function() {
-  'use strict'
+  'use strict';
 
-  let board = document.getElementById('board');
-
-  let SIZE = 3;
-  let i;
+  let SIZE = 2;
+  // let SIZE = 3;
   let currentNum = 0;
-  let panels = [];
-  let panel;
+  const PANEL_WIDTH = 50;
+  const BOARD_PADDING = 10;
 
   function createPanel(num) {
     let panel;
@@ -23,22 +21,39 @@
     return panel;
   }
 
-  for (i = 0; i < SIZE * SIZE; i++) {
-    // board.appendChild(createPanel(i));
-    panels.push(createPanel(i));
+  function initBoard() {
+    let board = document.getElementById('board');
+    let i;
+    let panels = [];
+    let panel;
+
+    document.getElementById('container').style.width = PANEL_WIDTH * SIZE + BOARD_PADDING * 2 + 'px';
+
+    while (board.firstChild) {
+      board.removeChild(board.firstChild);
+    }
+
+    for (i = 0; i < SIZE * SIZE; i++) {
+      // board.appendChild(createPanel(i));
+      panels.push(createPanel(i));
+    }
+
+    while (panels.length) {
+      panel = panels.splice(Math.floor(Math.random() * panels.length), 1);
+      board.appendChild(panel[0]);
+    }
   }
 
-  while (panels.length) {
-    panel = panels.splice(Math.floor(Math.random() * panels.length), 1);
-    board.appendChild(panel[0]);
-  }
-
+  initBoard();
 
   document.getElementById('btn').addEventListener('click', function() {
     let panels = document.getElementsByClassName('panel');
     let i;
+    initBoard();
     for (i = 0; i < panels.length; i++) {
       panels[i].className = 'panel';
     }
-  })
+    this.textContent = 'RESTART?';
+    this.className = 'restart';
+  });
 })();
