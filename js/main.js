@@ -1,11 +1,13 @@
 (function() {
   'use strict';
 
-  let SIZE = 2;
+  let SIZE = 3;
   // let SIZE = 3;
   let currentNum = 0;
   const PANEL_WIDTH = 50;
   const BOARD_PADDING = 10;
+  let startTime;
+  let timerId;
 
   function createPanel(num) {
     let panel;
@@ -16,6 +18,9 @@
       if ((this.textContent - 0) === currentNum) {
         this.className = 'panel flipped';
         currentNum++;
+      }
+      if (currentNum === SIZE * SIZE) {
+        clearTimeout(timerId);
       }
     });
     return panel;
@@ -44,16 +49,29 @@
     }
   }
 
+  function runTimer() {
+    document.getElementById('score').textContent = ((Date.now() - startTime) / 1000).toFixed(2);
+    timerId = setTimeout(function() {
+      runTimer();
+    }, 10);
+  }
+
   initBoard();
 
   document.getElementById('btn').addEventListener('click', function() {
     let panels = document.getElementsByClassName('panel');
     let i;
+    if (typeof timerId !== 'undefined') {
+      clearTimeout(timerId);
+    }
+    currentNum = 0;
     initBoard();
     for (i = 0; i < panels.length; i++) {
       panels[i].className = 'panel';
     }
     this.textContent = 'RESTART?';
     this.className = 'restart';
+    startTime = Date.now();
+    runTimer();
   });
 })();
